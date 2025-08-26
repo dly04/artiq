@@ -107,6 +107,11 @@ mod local_coremgmt {
                     io.until(|| !restart_idle.get())?;
                     restart_idle.set(true);
                 }
+                if key == "log_level" || key == "uart_log_level" {
+                    BufferLogger::with(|logger| {
+                        let _ = logger.set_log_filter_level(key, value);
+                    })
+                }
                 Reply::Success.write_to(stream)
             },
             Err(_) => Reply::Error.write_to(stream)
